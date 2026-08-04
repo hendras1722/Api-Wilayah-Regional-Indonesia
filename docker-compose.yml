@@ -1,0 +1,7 @@
+services:
+  regions:
+    image: api-regions:latest
+    container_name: api-regions
+    restart: unless-stopped
+    ports:
+      - "3002:3002"

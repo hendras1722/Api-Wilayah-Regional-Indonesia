@@ -1,6 +1,6 @@
 # use the official Bun image
 # see all versions at https://hub.docker.com/r/oven/bun/tags
-FROM oven/bun:1 AS base
+FROM oven/bun:1.4 AS base
 WORKDIR /usr/src/app
 
 # install dependencies into temp directory
@@ -34,5 +34,5 @@ COPY --from=prerelease /usr/src/app/package.json .
 
 # run the app
 USER bun
-EXPOSE 3000/tcp
+EXPOSE 3002/tcp
 ENTRYPOINT [ "bun", "run", "start" ]
