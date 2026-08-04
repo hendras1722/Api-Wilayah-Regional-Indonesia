@@ -37,10 +37,40 @@ jobs:
         run: |
           sudo docker save $IMAGE_NAME:${{ github.sha }} | gzip > image.tar.gz
       
-      - name: Check secret
+            # =========================
+      # DEKODE SSH KEY DARI BASE64
+      # =========================
+      - name: Prepare SSH Key
         run: |
-          echo "${{ secrets.VPS_SSH_KEY }}" | head -1
-          echo "${{ secrets.VPS_SSH_KEY }}" | tail -1
+          echo "SSH_KEY_DECODED<<EOF" >> $GITHUB_ENV
+          echo "${{ secrets.VPS_SSH_KEY }}" | base64 -d >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      # =========================
+      # COPY KE VPS
+      # =========================
+      - name: Copy to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ env.SSH_KEY_DECODED }}
+          source: "image.tar.gz"
+          target: "/tmp"
+
+      # =========================
+      # DEPLOY DI VPS
+      # =========================
+      - name: Deploy
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ env.SSH_KEY_DECODED }}
+          script: |
+            set -e
+            ...
+
 
       # =========================
       # COPY KE VPS
