@@ -1,0 +1,79 @@
+name: Deploy VPS
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  IMAGE_NAME: api-regions
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # =========================
+      # BUILD IMAGE (pakai SHA tag)
+      # =========================
+      - name: Build Image
+        run: |
+          sudo docker buildx build \
+            -f Dockerfile \
+            --platform linux/amd64 \
+            -t $IMAGE_NAME:${{ github.sha }} \
+            --load .
+
+      # =========================
+      # SAVE IMAGE
+      # =========================
+      - name: Save Image
+        run: |
+          sudo docker save $IMAGE_NAME:${{ github.sha }} | gzip > image.tar.gz
+
+      # =========================
+      # COPY KE VPS
+      # =========================
+      - name: Copy to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          source: "image.tar.gz"
+          target: "/tmp"
+
+      # =========================
+      # DEPLOY DI VPS
+      # =========================
+      - name: Deploy
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            set -e
+
+            IMAGE_TAG=${{ github.sha }}
+            IMAGE_NAME=api-regions
+
+            echo "Loading image..."
+            sudo docker load -i /tmp/image.tar.gz
+
+            echo "Tagging image..."
+            sudo docker tag $IMAGE_NAME:$IMAGE_TAG $IMAGE_NAME:latest
+
+            cd /home/ubuntu/opt/api/regions
+
+            echo "Restart container..."
+            sudo docker compose up -d --force-recreate regions
+
+            echo "Cleanup old image..."
+            sudo docker image prune -f
