@@ -5,3 +5,7 @@ services:
     restart: unless-stopped
     ports:
       - "3002:3002"
+
+networks:
+  cashier-network:
+    external: true
