@@ -36,7 +36,7 @@ jobs:
       - name: Save Image
         run: |
           sudo docker save $IMAGE_NAME:${{ github.sha }} | gzip > image.tar.gz
-      
+
       # =========================
       # DEKODE SSH KEY DARI BASE64
       # =========================

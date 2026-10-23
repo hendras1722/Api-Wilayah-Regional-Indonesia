@@ -19,14 +19,14 @@ Semua response berbentuk JSON dengan struktur:
 
 Jika data tidak ditemukan, response tetap `200` dengan `data: null` dan status HTTP `404` pada kode status endpoint tersebut.
 
-| Method | Endpoint                        | Deskripsi                                         |
-| ------ | -------------------------------- | -------------------------------------------------- |
-| GET    | `https://regions.syahendra.com/api/health`                    | Health check, membalas `Pong Ping`                  |
-| GET    | `https://regions.syahendra.com/api/provinces`                 | Daftar seluruh provinsi                             |
-| GET    | `https://regions.syahendra.com/api/province/:id`              | Detail satu provinsi berdasarkan `id`               |
-| GET    | `https://regions.syahendra.com/api/regencies/:idProvince`     | Daftar kabupaten/kota dalam sebuah provinsi          |
-| GET    | `https://regions.syahendra.com/api/district/:regencyId`       | Daftar kecamatan dalam sebuah kabupaten/kota         |
-| GET    | `https://regions.syahendra.com/api/village/:districtId`       | Daftar desa/kelurahan dalam sebuah kecamatan         |
+| Method | Endpoint                                                  | Deskripsi                                    |
+| ------ | --------------------------------------------------------- | -------------------------------------------- |
+| GET    | `https://regions.syahendra.com/api/health`                | Health check, membalas `Pong Ping`           |
+| GET    | `https://regions.syahendra.com/api/provinces`             | Daftar seluruh provinsi                      |
+| GET    | `https://regions.syahendra.com/api/province/:id`          | Detail satu provinsi berdasarkan `id`        |
+| GET    | `https://regions.syahendra.com/api/regencies/:idProvince` | Daftar kabupaten/kota dalam sebuah provinsi  |
+| GET    | `https://regions.syahendra.com/api/district/:regencyId`   | Daftar kecamatan dalam sebuah kabupaten/kota |
+| GET    | `https://regions.syahendra.com/api/village/:districtId`   | Daftar desa/kelurahan dalam sebuah kecamatan |
 
 ### Contoh
 
